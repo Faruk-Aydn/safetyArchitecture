@@ -1,0 +1,54 @@
+flowchart TB
+    subgraph EXTERNAL["Dış Dünya & Uzak Erişim"]
+        REMOTE["Uzak Servis / Bakım"]
+        ENG["Mühendislik İstasyonu"]
+    end
+
+    subgraph NORMAL_PATH["Normal Kontrol Yolu (Üretim Hattı)"]
+        direction TB
+        CAM["Kamera & Görüntü İşleme (IPC)<br/><i>Optik Boy Ölçümü & Optimizasyon</i>"]
+        SENS_NORM["Konveyör / Pozisyon Sensörleri"]
+        PLC_NORM["Standart Üretim PLC'si<br/><i>Kesim Sıralaması ve Hareket Yönetimi</i>"]
+        DRIVE["Servo Sürücüler & İnvertörler"]
+        ACT_NORM["Besleme Konveyörü & Malzeme İtici"]
+        
+        CAM -->|Boy & Kesim Koordinatları| PLC_NORM
+        SENS_NORM -->|Malzeme Geldi/Geçti| PLC_NORM
+        PLC_NORM -->|Hız ve Pozisyon Komutları| DRIVE
+        DRIVE -->|Tahrik Gücü| ACT_NORM
+    end
+
+    subgraph YELLOW_LINE["Dijital Kesişim Noktası ('Sarı Çizgi')"]
+        REMOTE -.->|Parametre / Firmware Değişikliği| PLC_NORM
+        ENG -.->|Yapılandırma & Kalibrasyon| CAM
+        ENG -.->|Güvensiz Erişim / Bypass Riski| SPLC
+    end
+
+    subgraph SAFETY_PATH["Safety Yolu (Fonksiyonel Emniyet · Donanımsal Olarak AYRI)"]
+        direction TB
+        ESTOP["Acil Stop (E-Stop) Butonları"]
+        LIGHT_CURTAIN["Optik Işık Perdesi (Koruyucu Bariyer)"]
+        INTERLOCK["Emniyet Switchleri & Kapak Kilitleri"]
+        
+        SPLC["Safety PLC (Çift Kanallı, PLr/SIL Sertifikalı)<br/><i>Checksum Korumalı Mantık Denetimi</i>"]
+        
+        STO["STO (Safe Torque Off) & Emniyet Kontaktörleri"]
+        SAFE_STATE(["GÜVENLİ DURUM (Safe State)<br/>- Kesici bıçak enerjisi kesilmiş<br/>- Besleme tahriki durdurulmuş<br/>- Beklenmedik yeniden başlama engellenmiş"])
+        
+        ESTOP -->|Çift Kanal Emniyet Sinyali| SPLC
+        LIGHT_CURTAIN -->|İhlal Tespiti (OSSD Çıkışı)| SPLC
+        INTERLOCK -->|Kapak Açıldı Sinyali| SPLC
+        
+        SPLC -->|Emniyet Açma / STO Tetikleme| STO
+        STO -->|Fiziksel Güç Kesintisi| SAFE_STATE
+    end
+
+    classDef normal fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
+    classDef safety fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#b71c1c;
+    classDef yellow fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5,color:#f57f17;
+    classDef safeState fill:#c8e6c9,stroke:#388e3c,stroke-width:3px,color:#1b5e20;
+
+    class CAM,SENS_NORM,PLC_NORM,DRIVE,ACT_NORM normal;
+    class ESTOP,LIGHT_CURTAIN,INTERLOCK,SPLC,STO safety;
+    class YELLOW_LINE yellow;
+    class SAFE_STATE safeState;

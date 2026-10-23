@@ -1,0 +1,45 @@
+flowchart LR
+    subgraph ATTACKER["1. Saldırgan Profili (KİM?)"]
+        EXT_ATT["Dış Tehdit Aktörü<br/><i>(Fırsatçı veya Hedefli)</i>"]
+        INSIDER["Meraklı / Yetkisiz İçeriden<br/><i>(Operatör / Taşeron)</i>"]
+        SUPPLY["Tedarik Zinciri / Servis<br/><i>(Enfekte Cihaz / Yazılım)</i>"]
+    end
+
+    subgraph ENTRY["2. Giriş Kapısı (NEREDEN?)"]
+        DOOR_NET["İnternete Açık Servis Kapısı<br/><i>(Zayıf Parola / Port Yönlendirme)</i>"]
+        DOOR_USB["Kilitsiz Fiziksel USB / HMI<br/><i>(Doğrudan Cihaz Erişimi)</i>"]
+        DOOR_PHISH["Kurumsal Ağ Oltalaması<br/><i>(Düz Ağ Üzerinden Sızma)</i>"]
+    end
+
+    subgraph ACTION["3. Siber Eylem (NE YAPAR?)"]
+        ACT_COORD["Kesim Koordinatlarını & Boy Reçetesini Değiştirir"]
+        ACT_ENC["Enkoder / Kamera Kalibrasyon Verisini Manipüle Eder"]
+        ACT_RESET["Güç Kesintisi Sonrası Eski Çevrimi Kontrolsüz Başlatır"]
+    end
+
+    subgraph CHAIN["4. Siber-Fiziksel Zincir (ZİNCİRLEME ETKİ)"]
+        CH_JAM["Hatalı boyda kesim $\rightarrow$ Malzeme sıkışır $\rightarrow$ Operatör müdahale için koruyucu alana girer"]
+        CH_DESYNC["Konum ve enkoder uyuşmazlığı $\rightarrow$ Malzeme hareket halindeyken kesici tetiklenir"]
+        CH_RESTART["Eski çevrim durumu yüklenir $\rightarrow$ Hat temizliği anında beklenmedik hareket başlar"]
+    end
+
+    subgraph CONSEQUENCE["5. Fiziksel Sonuç (İNSANA ZARAR - S=3)"]
+        HARM1(["AĞIR YARALANMA / AMPUTASYON<br/>(El / Parmak Kesilmesi)"])
+        HARM2(["ÖLÜMCÜL ÇARPMA & EZİLME<br/>(Yüksek Torklu Tahrik Sıkışması)"])
+    end
+
+    EXT_ATT --> DOOR_NET --> ACT_COORD --> CH_JAM --> HARM1
+    INSIDER --> DOOR_USB --> ACT_ENC --> CH_DESYNC --> HARM1
+    SUPPLY --> DOOR_PHISH --> ACT_RESET --> CH_RESTART --> HARM2
+
+    classDef attacker fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef entry fill:#fff8e1,stroke:#ffa000,stroke-width:2px;
+    classDef action fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px;
+    classDef chain fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef consequence fill:#ffebee,stroke:#b71c1c,stroke-width:3px,color:#b71c1c;
+
+    class EXT_ATT,INSIDER,SUPPLY attacker;
+    class DOOR_NET,DOOR_USB,DOOR_PHISH entry;
+    class ACT_COORD,ACT_ENC,ACT_RESET action;
+    class CH_JAM,CH_DESYNC,CH_RESTART chain;
+    class HARM1,HARM2 consequence;

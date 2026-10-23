@@ -1,0 +1,83 @@
+flowchart TB
+    subgraph Z5["BÖLGE 5 (Z5): DIŞ AĞ & KURUMSAL (Enterprise / External Zone)"]
+        INTERNET["Genel İnternet & Servis Sağlayıcı"]
+        ERP["Ofis Ağı (ERP, E-Posta, Kurumsal IT)"]
+        CLOUD["Bulut Telemetri Sunucuları"]
+    end
+
+    subgraph C54["Conduit 5-4: Dış Sınır Güvenlik Duvarı (Perimeter Firewall)"]
+        direction LR
+        FW1["Firewall: VPN Sonlandırma + MFA Zorunluluğu<br/><i>Doğrudan Port Yönlendirme ve Gelen Bağlantı YASAK</i>"]
+    end
+
+    subgraph Z4["BÖLGE 4 (Z4): BAKIM VE ERİŞİM DMZ'Sİ (Demilitarized Zone)"]
+        JUMP["Jump Server / Bastion Host<br/><i>Kişisel Hesaplar + Tam Video/Komut Oturum Kaydı</i>"]
+        PATCH["Yama & Güncelleme Dağıtım Sunucusu"]
+    end
+
+    subgraph C43["Conduit 4-3: DMZ - Denetim Güvenlik Duvarı (Internal Firewall)"]
+        direction LR
+        FW2["Firewall: Protokol İzin Listesi (Allow-List)<br/><i>Yalnızca Tanımlı Bakım Protokolleri (RDP/SSH/VNC Denetimli)</i>"]
+    end
+
+    subgraph Z3["BÖLGE 3 (Z3): OPTİMİZASYON & DENETİM (Supervisory & Optimization Zone)"]
+        IPC_CAM["Görüntü İşleme & Kamera IPC'si<br/><i>Optik Boy Ölçüm Motoru</i>"]
+        HMI["Operatör Paneli (HMI)"]
+        ENG_ST["Mühendislik İstasyonu (Engineering Workstation)"]
+        SCADA["SCADA İstemcisi"]
+    end
+
+    subgraph C32["Conduit 3-2: Denetim - Saha İletişim Filtresi"]
+        direction LR
+        FW3["Endüstriyel Filtre / VLAN Yönlendirici<br/><i>Yalnızca Üretim Verisi (OPC UA, Modbus TCP)</i>"]
+    end
+
+    subgraph Z2["BÖLGE 2 (Z2): MAKİNE KONTROL BÖLGESİ (Control Zone)"]
+        PLC["Standart Üretim PLC'si"]
+        DRIVES["Servo Sürücüler & İnvertörler"]
+        MOTORS["Konveyör Motorları & Pnömatik Valfler"]
+        
+        PLC <--> DRIVES
+        DRIVES --> MOTORS
+    end
+
+    subgraph C21["Conduit 2-1: Emniyet Sınır İzolasyonu (Safety Isolation Conduit)"]
+        direction LR
+        ISOLATION["Sıkı Filtrelenmiş / Fiziksel İzolasyon<br/><i>YALNIZCA Durum Okuma (Status Read)<br/>UZAKTAN YAZMA / PROGRAMLAMA KESİNLİKLE YASAK!</i>"]
+    end
+
+    subgraph Z1["BÖLGE 1 (Z1): FONKSİYONEL EMNİYET BÖLGESİ (Safety Zone - SL 4)"]
+        SPLC["Safety PLC (Çift Kanallı Emniyet Mantığı)"]
+        LIGHT["Işık Perdeleri & Kapak Switchleri"]
+        ESTOP["Acil Stop Butonları"]
+        STO_ACT["STO Modülü & Emniyet Kontaktörleri"]
+        
+        LIGHT --> SPLC
+        ESTOP --> SPLC
+        SPLC --> STO_ACT
+    end
+
+    %% Bağlantılar
+    INTERNET ==> C54
+    ERP ==> C54
+    C54 ==> Z4
+    Z4 ==> C43
+    C43 ==> Z3
+    Z3 ==> C32
+    C32 ==> Z2
+    Z2 <==> C21
+    C21 <==> Z1
+
+    classDef z5 fill:#eceff1,stroke:#607d8b,stroke-width:2px;
+    classDef z4 fill:#fff8e1,stroke:#ffa000,stroke-width:2px;
+    classDef z3 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef z2 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef z1 fill:#ffebee,stroke:#d32f2f,stroke-width:3px;
+    classDef conduit fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 4 4;
+
+    class Z5 z5;
+    class Z4 z4;
+    class Z3 z3;
+    class Z2 z2;
+    class Z1 z1;
+    class C54,C43,C32,C21 conduit;

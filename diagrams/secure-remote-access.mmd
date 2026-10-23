@@ -1,0 +1,67 @@
+flowchart TB
+    subgraph CURRENT["❌ MEVCUT GÜVENSİZ MİMARİ (Current Legacy Architecture)"]
+        direction TB
+        CUR_NET["Genel İnternet / Açık Portlar"]
+        CUR_MOD["Doğrudan Uzak Bakım Modülü<br/><i>(Ortak 'admin/admin' Parolası, 7/24 Açık)</i>"]
+        CUR_FLAT["DÜZ MAKİNE AĞI (Flat OT Network)<br/><i>Filtreleme Yok, İzolasyon Yok</i>"]
+        CUR_DEV["Üretim PLC + Kamera IPC + Safety PLC"]
+        
+        CUR_NET ==>|Doğrudan Erişim| CUR_MOD
+        CUR_MOD ==> CUR_FLAT
+        CUR_FLAT ==> CUR_DEV
+        
+        CUR_RISK(["🚨 TEHLİKE: İnternetten sızan saldırgan<br/>doğrudan Safety PLC'ye ulaşabilir!"])
+        CUR_DEV -.-> CUR_RISK
+    end
+
+    subgraph TARGET["✅ HEDEF GÜVENLİ MİMARİ (IEC 62443 & Zero-Trust Architecture)"]
+        direction TB
+        
+        subgraph T_USER["1. Yetkili Servis Teknisyeni"]
+            USER_DEV["Bakım Teknisyeni Dizüstü Bilgisayarı"]
+        end
+        
+        subgraph T_GATEWAY["2. Güvenli Giriş Kapısı (Perimeter Layer)"]
+            VPN["Şifreli VPN Tüneli (IPSec / WireGuard)"]
+            MFA["Çok Faktörlü Kimlik Doğrulama (MFA)"]
+            IDP["Kişisel Hesap & Yetki Yönetimi"]
+        end
+        
+        subgraph T_DMZ["3. Bakım DMZ'si (Isolation Layer)"]
+            JUMP_SRV["Jump Server (Bastion Host)<br/>- Varsayılan Kapalı (Onaylı & Süre Sınırlı)<br/>- Tam Video ve Tuş Oturum Kaydı"]
+        end
+        
+        subgraph T_CONTROL["4. Makine Kontrol Ağı (Supervisory & Control)"]
+            FW_OT["Endüstriyel Güvenlik Duvarı (Allow-List Filtresi)"]
+            T_PLC["Standart Üretim PLC'si & HMI & IPC"]
+        end
+        
+        subgraph T_SAFETY["5. Bağımsız Fonksiyonel Emniyet (Isolated Safety Zone)"]
+            SAFE_GATE["Fiziksel / Mantıksal Bariyer (Uzaktan Yazma YASAK)"]
+            T_SPLC["Safety PLC (Bağımsız Emniyet Mantığı)"]
+            T_STO["STO Donanımı & Işık Perdeleri & E-Stop"]
+            SAFE_GUARANTEE(["🛡️ GÜVENCE: Kontrol sistemi ve uzak erişim<br/>tamamen ele geçirilse bile EMNİYET ÇALIŞIR!"])
+        end
+        
+        USER_DEV --> VPN
+        VPN --> MFA
+        MFA --> IDP
+        IDP --> JUMP_SRV
+        JUMP_SRV --> FW_OT
+        FW_OT --> T_PLC
+        
+        T_PLC -.-x|Yazma/Konfigürasyon Bloke| SAFE_GATE
+        SAFE_GATE --> T_SPLC
+        T_SPLC --> T_STO
+        T_STO --> SAFE_GUARANTEE
+    end
+
+    classDef danger fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#b71c1c;
+    classDef success fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+    classDef highlight fill:#fff8e1,stroke:#f57f17,stroke-width:2px,color:#e65100;
+    classDef safeBox fill:#e0f2f1,stroke:#00695c,stroke-width:3px,color:#004d40;
+
+    class CURRENT,CUR_RISK danger;
+    class TARGET,SAFE_GUARANTEE success;
+    class JUMP_SRV,VPN,MFA highlight;
+    class T_SAFETY,T_SPLC,T_STO safeBox;
