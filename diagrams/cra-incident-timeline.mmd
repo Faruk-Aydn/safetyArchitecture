@@ -1,0 +1,49 @@
+flowchart TD
+    subgraph T0["🚨 10:15 — İLK 15 DAKİKA (Acil Karantina & Güvenlik)"]
+        direction TB
+        E1["<b>1. Emniyeti Sağla:</b> Makineyi kontrollü güvenli duruma (Safe State) al.<br/><i>⚠️ ASLA RESETLEME! Resetlemek delilleri yok eder.</i>"]
+        E2["<b>2. Ekibi Topla:</b> OT Güvenlik, Bakım Mühendisi ve İSG Sorumlusunu ara."]
+        E3["<b>3. Oturumu Kes:</b> Şüpheli uzak bağlantı kablosunu çek / portu kapat."]
+        E4["<b>4. Olay Günlüğü Başlat:</b> Saat damgalı adli kayıt defteri aç."]
+        E1 --> E2 --> E3 --> E4
+    end
+
+    subgraph T2H["⏱️ İLK 2 SAAT (Emniyet Teyidi & Adli Kanıt Koruma)"]
+        direction TB
+        C1["<b>Emniyet Kontrolü:</b> Safety PLC Checksum'ını referans değerle karşılaştır.<br/>Işık perdesi ve E-Stop fonksiyon testini yap."]
+        C2["<b>Kanıtı Koru:</b> PLC/Safety PLC programının adli imajını ve SHA-256 hash'ini al.<br/>Güvenlik duvarı, VPN, Jump Server ve HMI loglarını dondur."]
+        C3["<b>Hesap Karantinası:</b> Yetkisiz girilen servis hesabını iptal et.<br/>Paylaşılan tüm şifreleri geçersiz kıl."]
+        C1 --> C2 --> C3
+    end
+
+    subgraph T24H["📢 24 SAAT: CRA ERKEN UYARI (Early Warning Notification)"]
+        direction TB
+        W1["<b>Yasal Bildirim:</b> AB CRA Madde 11 uyarınca yetkili CSIRT / Ulusal Otoriteye bildirim.<br/>- Tespit saati ve makine kimliği (UKM-OPT)<br/>- Kötü niyetli siber müdahale şüphesi<br/>- Olası fiziksel riskler ve alınan ilk tedbirler"]
+    end
+
+    subgraph T72H["📑 72 SAAT: CRA DETAYLI BİLDİRİM (Detailed Incident Report)"]
+        direction TB
+        D1["<b>Kök Neden Analizi:</b> Saldırı vektörü, sızma kapısı ve etkilenen bileşenler.<br/><b>Emniyet Etkisi:</b> Kesici ve besleme parametrelerinde değişiklik tespiti.<br/><b>Rol Dağılımı:</b> OT/IT logları çözümler, Emniyet Mühendisi doğrulama yapar,<br/>Üst Yönetim (A) resmi raporu imzalar."]
+    end
+
+    subgraph T14D["🏁 14 GÜN / SON RAPOR (Final Forensic Closure)"]
+        direction TB
+        F1["<b>Kalıcı İyileştirme & Arşiv:</b> Tüm oturum logları, yama kayıtları,<br/>donanımsal güvenlik anahtarı revizyonu ve yeniden doğrulama testleri.<br/>Evidence Pack EP 13 Incident Response başlığı altına kalıcı arşivleme."]
+    end
+
+    T0 ==> T2H
+    T2H ==> T24H
+    T24H ==> T72H
+    T72H ==> T14D
+
+    classDef t0 fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#b71c1c;
+    classDef t2h fill:#fff8e1,stroke:#f57f17,stroke-width:2px,color:#e65100;
+    classDef t24h fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
+    classDef t72h fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
+    classDef t14d fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+
+    class T0 t0;
+    class T2H t2h;
+    class T24H t24h;
+    class T72H t72h;
+    class T14D t14d;

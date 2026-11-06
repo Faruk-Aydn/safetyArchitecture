@@ -6,7 +6,7 @@
 [![Regulation: CRA 2026](https://img.shields.io/badge/EU%20Regulation-CRA%20(Cyber%20Resilience%20Act)-purple.svg)](https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act)
 [![Regulation: EU 2023/1230](https://img.shields.io/badge/Machinery%20Regulation-EU%202023%2F1230-orange.svg)](https://eur-lex.europa.eu/eli/reg/2023/1230/oj)
 
-Bu depo, **Safety 4.0 Bootcamp** kapsamında geliştirilen **UKM-OPT (Otomatik Optik Boy Kesme Makinesi)** endüstriyel sisteminin **Fonksiyonel Emniyet (Functional Safety)** ve **Endüstriyel Siber Güvenlik (OT Cyber Security)** mimarisinin ilk 4 laboratuvar çıktısını, mimari diyagramlarını ve Evidence Pack (Kanıt Paketi) dokümantasyonunu içermektedir.
+Bu depo, **Safety 4.0 Bootcamp** kapsamında geliştirilen **UKM-OPT (Otomatik Optik Boy Kesme Makinesi)** endüstriyel sisteminin **Fonksiyonel Emniyet (Functional Safety)** ve **Endüstriyel Siber Güvenlik (OT Cyber Security)** mimarisinin 7 laboratuvar çıktısını (Lab 1 - Lab 7), mimari diyagramlarını, stratejik SWOT analizini ve Evidence Pack (Kanıt Paketi) dokümantasyonunu içermektedir.
 
 ---
 
@@ -31,7 +31,7 @@ UKM-OPT; endüstriyel ahşap, profil veya metal parçaların boylarını kamera 
 
 ---
 
-## 📚 Laboratuvar Dokümantasyonu (İlk 4 Lab & Stratejik Analizler)
+## 📚 Laboratuvar Dokümantasyonu (Tüm Lablar & Stratejik Analizler)
 
 | No | Laboratuvar / Analiz Başlığı | Temel Odak ve Mühendislik Kavramı | Çıktı Belgesi | Evidence Pack Eşleşmesi |
 | :---: | :--- | :--- | :--- | :---: |
@@ -39,6 +39,9 @@ UKM-OPT; endüstriyel ahşap, profil veya metal parçaların boylarını kamera 
 | **02** | [**Lab 2: IEC 62443 Mini Workshop**](docs/lab-02-iec-62443-zones-conduits.md) | Varlıkların 5 temel güvenlik bölgesine (Z1-Z5) ayrılması, kontrollü geçiş kapıları (Conduits) ve 6 satırlık güvenli uzak erişim karar tablosu. | `Zone / Conduit Diagram` | **EP 05 (Zone & Conduit)** |
 | **03** | [**Lab 3: Threat & Risk Matrix**](docs/lab-03-threat-and-risk-matrix.md) | 5 parçalı siber-fiziksel senaryo modeli ($Kim \rightarrow Kapı \rightarrow Eylem \rightarrow Zincir \rightarrow Fiziksel Zarar$), $L \times S \times E$ matrisi ve hayati $S=3$ kuralı. | `Risk Register` | **EP 04 (Risk Assessment)** |
 | **04** | [**Lab 4: Secure Remote Access**](docs/lab-04-secure-remote-access.md) | Çift katmanlı savunma modeli (Erişim Güvenliği + Emniyet Bağımsızlığı), Mevcut vs Hedef mimari, uzaktan emniyet müdahalesi yasağı. | `Secure Architecture` | **EP 02 + EP 06 (Remote Access)** |
+| **05** | [**Lab 5: SBOM / CVE / Patch**](docs/lab-05-sbom-cve-patch.md) | SBOM envanteri, zafiyet değerlendirmesinde "Üç Şart Kuralı", CVSS vs Safety, testbed doğrulama ve telafi edici önlemler. | `Vulnerability Decision` | **EP 09 · 10 · 11 (Vulnerability & Patch)** |
+| **06** | [**Lab 6: CRA Incident Simulation**](docs/lab-06-cra-incident-simulation.md) | Yetkisiz erişim simülasyonu, "Önce Emniyet Sonra Kanıt", 15dk/2s/24s/72s/14g müdahale takvimi ve adli bilişim (forensics). | `Incident Workflow` | **EP 13 (Incident Response)** |
+| **07** | [**Lab 7: AI Safety Challenge**](docs/lab-07-ai-safety-challenge.md) | "Prediction $\neq$ Safety", girdi bütünlüğü, güven skoru eşiği, YZ dışı sabit limitler ve deterministik fallback mekanizması. | `AI Fail-Safe Decision` | **EP 03 + EP 15 (AI Risk Management)** |
 | **—** | [**UKM-OPT SWOT Analizi**](docs/swot-analizi.md) | Üstünkarlı Makine A.Ş. UKM-OPT makinesinin güçlü/zayıf yönleri, siber güvenlik fırsatları ve tehdit stratejileri. | `SWOT Matrix & Actions` | **Siber Güvenlik Eylem Planı** |
 
 ---
@@ -120,6 +123,9 @@ flowchart TB
 2. **$S=3$ Kuralı:** Ağır uzuv kaybı veya ölüm riski ($S=3$) taşıyan senaryolar, siber olasılık skoru düşük kalsa dahi asla arka plana atılamaz; doğrudan öncelikli inceleme ve aksiyon planına alınır.
 3. **Emniyet Bağımsızlığı İlkesi:** Uzaktan bakım erişimi veya üretim kontrol sistemi (PLC/IPC) tamamen ele geçirilse dahi, fonksiyonel emniyet donanımı (Safety PLC $\rightarrow$ STO) operatörü bağımsız korumaya devam etmelidir.
 4. **Yerinde Değişiklik İlkesi:** Emniyet mantığı veya muting/blanking parametreleri uzaktan yazılamaz; yalnızca yerinde, yetkili uzman ve fiziksel anahtarla değiştirilebilir.
+5. **Üç Şart Kuralı (SBOM & CVE):** CVSS 9.8 tek başına fabrikayı durdurma sebebi değildir; bileşen var mı, sürüm etkileniyor mu ve açık ağdan ulaşılabilir mi kontrol edilir.
+6. **Önce Emniyet, Sonra Kanıt:** Olay anında asla *"resetle devam et"* yapılmaz. Önce insanı korumak için Safe State'e geçilir, hemen sonra adli kanıtlar (loglar, imajlar) dondurulur.
+7. **Prediction $\neq$ Safety:** Yapay zeka istatistiksel bir tahmin motorudur; emniyeti garanti eden kurallar, sabit sınırlar (hard limits) ve emniyet zinciri YZ'nin tamamen dışında tanımlanır.
 
 ---
 
@@ -133,14 +139,25 @@ safetyArchitecture/
 │   ├── lab-01-safety-architecture.md          # Lab 1: Safety Function Map (EP 03)
 │   ├── lab-02-iec-62443-zones-conduits.md      # Lab 2: Zone & Conduit Diagramı ve Karar Tablosu (EP 05)
 │   ├── lab-03-threat-and-risk-matrix.md       # Lab 3: Siber-Fiziksel Risk Analizi ve Risk Register (EP 04)
-│   └── lab-04-secure-remote-access.md         # Lab 4: Güvenli Uzak Erişim ve Emniyet Bağımsızlığı (EP 02/06)
+│   ├── lab-04-secure-remote-access.md         # Lab 4: Güvenli Uzak Erişim ve Emniyet Bağımsızlığı (EP 02/06)
+│   ├── lab-05-sbom-cve-patch.md               # Lab 5: SBOM, Zafiyet ve Yama Karar Akışı (EP 09/10/11)
+│   ├── lab-06-cra-incident-simulation.md      # Lab 6: Olay Müdahale ve CRA Bildirim Zaman Çizelgesi (EP 13)
+│   ├── lab-07-ai-safety-challenge.md          # Lab 7: YZ Hata Güvenliği ve Emniyet Mimarisi (EP 03/15)
+│   └── swot-analizi.md                        # UKM-OPT Makinesi Siber Güvenlik SWOT Analizi
 ├── diagrams/
 │   ├── safety-function-map.mmd                # Lab 1 Mermaid kaynak diyagramı
 │   ├── zones-and-conduits.mmd                 # Lab 2 Mermaid kaynak diyagramı
 │   ├── attack-tree-risk.mmd                   # Lab 3 Mermaid kaynak diyagramı
-│   └── secure-remote-access.mmd               # Lab 4 Mermaid kaynak diyagramı
+│   ├── secure-remote-access.mmd               # Lab 4 Mermaid kaynak diyagramı
+│   ├── vulnerability-decision-flow.mmd        # Lab 5 Mermaid kaynak diyagramı
+│   ├── cra-incident-timeline.mmd              # Lab 6 Mermaid kaynak diyagramı
+│   └── ai-safety-failsafe-architecture.mmd    # Lab 7 Mermaid kaynak diyagramı
 └── resources/
-    └── UKM-OPT_Lab_Foyleri_Dolu.pdf            # Bootcamp orijinal dolu lab föyleri
+    ├── 2.1. lab_foyleri_genel.pdf              # Genel sürüm (Şişeleme Hattı) föyleri
+    ├── 2.2 lab_foyleri_paketpro.pdf            # PaketPro 3000 çözümlü makine föyleri
+    ├── Sunum.pdf                              # Safety 4.0 Bootcamp eğitim sunumu
+    ├── swotAnalizi.docx                       # SWOT analizinin orijinal Microsoft Word dökümanı
+    └── UKM-OPT_Lab_Foyleri_Dolu.pdf            # Bootcamp UKM-OPT makinesi doldurulmuş föyleri
 ```
 
 ---

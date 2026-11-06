@@ -1,0 +1,60 @@
+flowchart TB
+    subgraph SENSING["1. Algılama ve Girdi Bütünlüğü (Input Verification)"]
+        CAM["Endüstriyel Kamera<br/><i>(Ahşap / Profil Optik Tarama)</i>"]
+        LIVENESS["Girdi Bütünlüğü Denetimi<br/><i>- Kare Sayacı & Zaman Damgası<br/>- Parlaklık / Histogram Analizi<br/>- Donuk Kare / Sahte Veri Tespiti</i>"]
+        CAM --> LIVENESS
+    end
+
+    subgraph AI_CORE["2. Yapay Zeka Karar Katmanı (AI Engine / IPC)"]
+        direction TB
+        MODEL["Optimizasyon & Kusur Algılama Modeli<br/><i>(Boy Kesim Optimizasyonu & Budak Tespiti)</i>"]
+        CONF{"Model Güven Skoru (Confidence)<br/>$\ge$ %95 Eşik Değeri mi?"}
+        
+        LIVENESS -->|Bütünlük Doğrulandı| MODEL
+        LIVENESS -.->|Bozuk / Donmuş Kare| CORRUPT_ALARM["🚨 GİRDİ HATASI: Kesimi Durdur & Alarm Ver"]
+        MODEL --> CONF
+    end
+
+    subgraph ARBITRATION["3. Bağımsız Güvenlik Katmanı (Safety Arbitration & Guardrails)"]
+        direction TB
+        HARD_LIMITS["Donanımsal & PLC Güvenlik Sınırları (Hard Limits)<br/><i>(YZ asla maksimum hız veya strok sınırını aşamaz)</i>"]
+        SECONDARY_CHECK["Bağımsız İkinci Kontrol<br/><i>(Lazer Mesafe Sensörü & Enkoder Doğrulaması)</i>"]
+        HUMAN_SAMPLE["Periyodik İnsan Numune Kontrolü (Human-in-the-Loop)"]
+        
+        CONF -- "EVET ($\ge$ %95)" --> SECONDARY_CHECK
+        SECONDARY_CHECK --> HARD_LIMITS
+        
+        CONF -- "HAYIR (< %95)" --> LOW_CONF["Parçayı Iskartaya / İncelemeye Ayır"]
+        LOW_CONF --> REPEAT_CHECK{"Art Arda Düşük Güven mi?"}
+        REPEAT_CHECK -- "EVET" --> FALLBACK["FALLBACK: Klasik Deterministik<br/>Sabit Boy Kesim Moduna Geç"]
+        REPEAT_CHECK -- "HAYIR" --> HUMAN_SAMPLE
+    end
+
+    subgraph EXECUTION["4. PLC ve Sahada Güvenli İcra"]
+        direction TB
+        PLC_CMD["PLC Kesim ve Besleme Komutu"]
+        SAW_SERVO["Testere Bıçağı & Malzeme Besleme Motorları"]
+        
+        HARD_LIMITS --> PLC_CMD
+        FALLBACK --> PLC_CMD
+        PLC_CMD --> SAW_SERVO
+    end
+
+    subgraph SAFETY_INTERLOCK["5. Donanımsal Fonksiyonel Emniyet (Z1 - Tamamen Bağımsız)"]
+        direction TB
+        ISOLATED_SPLC["Safety PLC & Işık Perdesi & STO<br/><i>(YZ kararı ne olursa olsun insan yaklaşırsa gücü keser!)</i>"]
+    end
+
+    SAW_SERVO -.->|Fiziksel Güç Kesintisi (STO)| ISOLATED_SPLC
+
+    classDef sens fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef ai fill:#fff8e1,stroke:#ffa000,stroke-width:2px;
+    classDef arbit fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef exec fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef safety fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#b71c1c;
+
+    class SENSING,CAM,LIVENESS sens;
+    class AI_CORE,MODEL,CONF ai;
+    class ARBITRATION,HARD_LIMITS,SECONDARY_CHECK,HUMAN_SAMPLE,FALLBACK,LOW_CONF arbit;
+    class EXECUTION,PLC_CMD,SAW_SERVO exec;
+    class SAFETY_INTERLOCK,ISOLATED_SPLC,CORRUPT_ALARM safety;
