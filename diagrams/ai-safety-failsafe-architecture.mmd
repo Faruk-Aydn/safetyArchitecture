@@ -8,7 +8,7 @@ flowchart TB
     subgraph AI_CORE["2. Yapay Zeka Karar Katmanı (AI Engine / IPC)"]
         direction TB
         MODEL["Optimizasyon & Kusur Algılama Modeli<br/><i>(Boy Kesim Optimizasyonu & Budak Tespiti)</i>"]
-        CONF{"Model Güven Skoru (Confidence)<br/>$\ge$ %95 Eşik Değeri mi?"}
+        CONF{"Model Güven Skoru (Confidence)<br/>≥ %95 Eşik Değeri mi?"}
         
         LIVENESS -->|Bütünlük Doğrulandı| MODEL
         LIVENESS -.->|Bozuk / Donmuş Kare| CORRUPT_ALARM["🚨 GİRDİ HATASI: Kesimi Durdur & Alarm Ver"]
@@ -21,7 +21,7 @@ flowchart TB
         SECONDARY_CHECK["Bağımsız İkinci Kontrol<br/><i>(Lazer Mesafe Sensörü & Enkoder Doğrulaması)</i>"]
         HUMAN_SAMPLE["Periyodik İnsan Numune Kontrolü (Human-in-the-Loop)"]
         
-        CONF -- "EVET ($\ge$ %95)" --> SECONDARY_CHECK
+        CONF -- "EVET (≥ %95)" --> SECONDARY_CHECK
         SECONDARY_CHECK --> HARD_LIMITS
         
         CONF -- "HAYIR (< %95)" --> LOW_CONF["Parçayı Iskartaya / İncelemeye Ayır"]
@@ -45,7 +45,7 @@ flowchart TB
         ISOLATED_SPLC["Safety PLC & Işık Perdesi & STO<br/><i>(YZ kararı ne olursa olsun insan yaklaşırsa gücü keser!)</i>"]
     end
 
-    SAW_SERVO -.->|Fiziksel Güç Kesintisi (STO)| ISOLATED_SPLC
+    SAW_SERVO -.->|"Fiziksel Güç Kesintisi (STO)"| ISOLATED_SPLC
 
     classDef sens fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
     classDef ai fill:#fff8e1,stroke:#ffa000,stroke-width:2px;

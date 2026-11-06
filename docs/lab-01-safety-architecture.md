@@ -61,7 +61,7 @@ flowchart TB
         SAFE_STATE(["GÜVENLİ DURUM (Safe State)<br/>- Kesici bıçak enerjisi kesilmiş<br/>- Besleme tahriki durdurulmuş<br/>- Beklenmedik yeniden başlama engellenmiş"])
         
         ESTOP -->|Çift Kanal Emniyet Sinyali| SPLC
-        LIGHT_CURTAIN -->|İhlal Tespiti (OSSD Çıkışı)| SPLC
+        LIGHT_CURTAIN -->|"İhlal Tespiti (OSSD Çıkışı)"| SPLC
         INTERLOCK -->|Kapak Açıldı Sinyali| SPLC
         
         SPLC -->|Emniyet Açma / STO Tetikleme| STO
