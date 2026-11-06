@@ -153,11 +153,8 @@ safetyArchitecture/
 │   ├── cra-incident-timeline.mmd              # Lab 6 Mermaid kaynak diyagramı
 │   └── ai-safety-failsafe-architecture.mmd    # Lab 7 Mermaid kaynak diyagramı
 └── resources/
-    ├── 2.1. lab_foyleri_genel.pdf              # Genel sürüm (Şişeleme Hattı) föyleri
-    ├── 2.2 lab_foyleri_paketpro.pdf            # PaketPro 3000 çözümlü makine föyleri
     ├── Sunum.pdf                              # Safety 4.0 Bootcamp eğitim sunumu
-    ├── swotAnalizi.docx                       # SWOT analizinin orijinal Microsoft Word dökümanı
-    └── UKM-OPT_Lab_Foyleri_Dolu.pdf            # Bootcamp UKM-OPT makinesi doldurulmuş föyleri
+    └── swotAnalizi.docx                       # SWOT analizinin orijinal Microsoft Word dökümanı
 ```
 
 ---
