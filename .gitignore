@@ -1,0 +1,17 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary and log files
+*.tmp
+*.log
+*.bak
+pdf_text.txt
+bootcamp_full.txt
+bootcamp_ozet.txt
+
+# Editor / IDE Files
+.vscode/
+.idea/
+*.swp
